@@ -26,6 +26,9 @@ class Client
             ],
             'http_errors' => false
         ]);
+        if (isset($options["http"])) {
+            $this->http = $options["http"];
+        }
     }
 
     public function push(Book $book)
