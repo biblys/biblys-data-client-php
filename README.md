@@ -73,7 +73,7 @@ Get the book's title
 
 ## Examples
 
-Get book infos from ISBN
+Get a book's infos from an ISBN
 
 ```php
 use Biblys\Data\Client;
@@ -91,6 +91,26 @@ if (!$result) {
 ```
 
 
+Push a book's infos to server
+
+```php
+use Biblys\Data\Client;
+
+$client = new Client([
+  "apiKey" => "YOUR_API_KEY" // required when pushing data
+]);
+
+$book = new Book();
+$book->setEan('9791091146134');
+$book->setTitle('Chants du cauchemar et de la nuit');
+
+try {
+  $result = $client->push($book);  
+} catch (Exception $e) {
+  // Something went wrong
+}
+
+```
 
 
 ## Test
@@ -99,3 +119,10 @@ Run tests with PHPUnit:
 
 * `composer install`
 * `vendor/bin/phpunit tests/`
+
+
+## Changelog
+
+0.1.0 (2016-03-05)
+* First release
+* Basic get and push methods
