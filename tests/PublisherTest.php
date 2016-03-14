@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use Biblys\Data\Book;
+use Biblys\Data\Publisher;
 
 class testPublisher extends PHPUnit_Framework_TestCase
 {
@@ -14,11 +14,11 @@ class testPublisher extends PHPUnit_Framework_TestCase
     public function testSetId()
     {
         $publisher = new Publisher();
-        $ean = '1234';
+        $id = '1234';
 
         $publisher->setId($id);
 
-        $this->assertEquals($id, $publisher->getEan(), "setId should set an id");
+        $this->assertEquals($id, $publisher->getId(), "setId should set an id");
     }
 
     /**

@@ -95,4 +95,61 @@ class Client
         // Else, throw an exception
         throw new \Exception("Server answered $status");
     }
+
+    public function pushPublisher(Publisher $publisher)
+    {
+        // Try to fetch the book from the server
+        $fetch = $this->getPublisher($publisher->getId());
+
+        // If it doesn't exist, create it
+        if (!$fetch) {
+            $this->createPublisher($publisher);
+            return;
+        }
+
+        // Else, update it (to be implemented server-side)
+        return;
+    }
+
+    public function createPublisher(Publisher $publisher)
+    {
+        $response = $this->http->request('POST', '/api/v0/publishers/', [
+            'form_params' => [
+                'name' => $publisher->getName()
+            ]
+        ]);
+        $status = $response->getStatusCode();
+
+        if ($status !== 201) {
+            throw new \Exception("Server answered $status");
+        }
+
+        return true;
+    }
+
+    public function getPublisher($id)
+    {
+        // Fetch publisher from server with this id
+        $response = $this->http->request('GET', "/api/v0/books/$id");
+        $status = $response->getStatusCode();
+
+        // Return false if the publisher does not exist
+        if ($status === 404) {
+            return false;
+        }
+
+        // Return the publisher if it exists
+        if ($status === 200) {
+            $body = (string) $response->getBody();
+            $publisherData = json_decode($body);
+
+            $publisher = new Publisher();
+            $publisher->setId($publisherData->id);
+            $publisher->setName($publisherData->name);
+            return $publisher;
+        }
+
+        // Else, throw an exception
+        throw new \Exception("Server answered $status");
+    }
 }

@@ -1,9 +1,14 @@
 <?php
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use Biblys\Data\Client;
 use Biblys\Data\Book;
+use Biblys\Data\Publisher;
 
 use GuzzleHttp\Client as Http;
 use GuzzleHttp\Handler\MockHandler;
@@ -22,7 +27,11 @@ class testClient extends PHPUnit_Framework_TestCase
             new Response(200, [], '{"title":"Chants du cauchemar et de la nuit","ean":"9791091146135"}'),
             new Response(404, [], 'Cannot find a book with EAN 9791091146134'),
             new Response(201, [], '{"title":"Chants du cauchemar et de la nuit","ean":"9791091146135"}'),
-            new Response(409, [])
+            new Response(409),
+            new Response(200, [], '{"id":"1234","name":"Dystopia"}'),
+            new Response(404, [], 'Cannot find a publisher with id 1234'),
+            new Response(201, [], '{"id":"1234","name":"Dystopia"}'),
+            new Response(409, [], '{"id":"1234"}')
         ]);
 
         $handler = HandlerStack::create($mock);
@@ -86,4 +95,51 @@ class testClient extends PHPUnit_Framework_TestCase
         $result = self::$client->createBook($book);
     }
 
+    /**
+     * Test getting a book
+     */
+    public function testGetPublisher()
+    {
+        $book = self::$client->getPublisher('1234');
+
+        $this->assertInstanceOf('Biblys\Data\Publisher', $book, 'getPublisher result must be an instance of Publisher');
+        $this->assertEquals('1234', $book->getId());
+        $this->assertEquals('Dystopia', $book->getName());
+    }
+
+    /**
+     * Test getting a book with response 404
+     */
+    public function testGetPublisherNotFound()
+    {
+        $publisher = self::$client->getPublisher('1018');
+
+        $this->assertFalse($publisher);
+    }
+
+    /**
+     * Test creating a book
+     */
+    public function testCreatePublisher()
+    {
+        $publisher = new Publisher();
+        $publisher->setName('Dystopia');
+
+        $result = self::$client->createPublisher($publisher);
+
+        $this->assertTrue($result);
+    }
+
+    /**
+     * Test creating a book that already exists
+     * @expectedException Exception
+     * @expectedExceptionMessage Server answered 409
+     */
+    public function testCreatePublisherThatExists()
+    {
+        $publisher = new Publisher();
+        $publisher->setName('Dystopia');
+
+        $result = self::$client->createPublisher($publisher);
+    }
 }
