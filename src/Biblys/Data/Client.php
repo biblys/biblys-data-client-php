@@ -38,6 +38,11 @@ class Client
 
     public function pushBook(Book $book)
     {
+        // Push related publisher
+        $publisher = $book->getPublisher();
+        $publisher = $this->pushPublisher($publisher);
+        $book->setPublisher($publisher);
+
         // Try to fetch the book from the server
         $fetch = $this->getBook($book->getEan());
 
@@ -112,7 +117,7 @@ class Client
         }
 
         // Else, update it (to be implemented server-side)
-        return;
+        return $fetch;
     }
 
     public function createPublisher(Publisher $publisher)
