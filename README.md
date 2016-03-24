@@ -170,6 +170,10 @@ Run tests with PHPUnit:
 
 ## Changelog
 
+0.2.0 (2016-03-24)
+* Publisher push, create and get methods
+* Book must be pushed with a Publisher
+
 0.1.0 (2016-03-05)
 * First release
-* Basic get and push methods
+* Book push, create and get methods
