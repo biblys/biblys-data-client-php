@@ -33,6 +33,11 @@ class Client
 
     public function push(Book $book)
     {
+        return $this->pushBook($book);
+    }
+
+    public function pushBook(Book $book)
+    {
         // Try to fetch the book from the server
         $fetch = $this->getBook($book->getEan());
 
