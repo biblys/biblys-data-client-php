@@ -108,8 +108,7 @@ class Client
 
         // If it doesn't exist, create it
         if (!$fetch) {
-            $this->createPublisher($publisher);
-            return;
+            return $this->createPublisher($publisher);
         }
 
         // Else, update it (to be implemented server-side)
@@ -129,7 +128,13 @@ class Client
             throw new \Exception("Server answered $status");
         }
 
-        return true;
+        // Update publisher with response
+        $body = (string) $response->getBody();
+        $publisherData = json_decode($body);
+        $publisher->setId($publisherData->id);
+        $publisher->setName($publisherData->name);
+
+        return $publisher;
     }
 
     public function getPublisher($id)

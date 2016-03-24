@@ -28,6 +28,6 @@
         }
     },
     "scripts": {
-      "test": "vendor/bin/phpunit tests -v --colors --testdox"
+      "test": "vendor/bin/phpunit tests -v --colors"
     }
 }
