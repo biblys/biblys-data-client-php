@@ -26,5 +26,8 @@
         "psr-0": {
             "Biblys": "src/"
         }
+    },
+    "scripts": {
+      "test": "vendor/bin/phpunit tests -v --colors"
     }
 }
