@@ -35,7 +35,7 @@ Get book infos from Biblys Data server for this ISBN.
 Returns a `Book` object if an object was found for this ISBN, returns false
 otherwise.
 
-#### $client->push(Book $book)
+#### $client->pushBook(Book $book)
 
 Send the `Book` object to server. Will test if there is already a book with 
 this ISBN with `getBook()`. If there is, will use the `updateBook()` method
@@ -50,28 +50,67 @@ a book with this ISBN.
 
 Not yet implemented on the server (will fail silently).
 
+#### $client->pushPublisher(Publisher $publisher)
+
+Send the `Publisher` object to server. Will test if there is already a book with 
+this id with `getPublisher()`. If there is, will use the `updatePublisher()` method
+to update it. Else, will use the `createPublisher()` method to create it.
+
+#### $client->createPublisher(Publisher $publisher)
+
+Will try create the book on the server. Throws an exception if there is already
+a book with this ISBN.
+
+#### $client->updatePublisher(Publisher $publisher)
+
+Not yet implemented on the server (will fail silently).
+
 
 ### Book
 
-### $book = new Book()
+#### $book = new Book()
 
 Create a new `Book` object
 
-### $book->setEan(string $isbn)
+#### $book->setEan(string $isbn)
 
 Set the book's ISBN. Throws an exception `$isbn` is not a valid ISBN.
 
-### $book->getEan($string $isbn)
+#### $book->getEan()
 
 Get the book's ISBN.
 
-### $book->setTitle(string $title)
+#### $book->setTitle(string $title)
 
 Set the book's title
 
-### $book->getTitle(string $title)
+#### $book->getTitle()
 
 Get the book's title
+
+
+### Publisher
+
+#### $publisher = new Publisher()
+
+Create a new `Publisher` object
+
+#### $publisher->setId(string $id)
+
+Set the publisher's id.
+
+#### $publisher->getId()
+
+Get the publisher's id.
+
+#### $publisher->setName(string $name)
+
+Set the publisher's name
+
+#### $book->getName()
+
+Get the publisher's name
+
 
 ## Examples
 
@@ -97,6 +136,8 @@ Push a book's infos to server
 
 ```php
 use Biblys\Data\Client;
+use Biblys\Data\Book;
+use Biblys\Data\Publisher;
 
 $client = new Client([
   "apiKey" => "YOUR_API_KEY" // required when pushing data
@@ -105,6 +146,10 @@ $client = new Client([
 $book = new Book();
 $book->setEan('9791091146134');
 $book->setTitle('Chants du cauchemar et de la nuit');
+
+$publisher = new Publisher();
+$publisher->setName('Dystopia');
+$book->setPublisher($publisher);
 
 try {
   $result = $client->push($book);  
@@ -120,7 +165,7 @@ try {
 Run tests with PHPUnit:
 
 * `composer install`
-* `vendor/bin/phpunit tests/`
+* `composer test`
 
 
 ## Changelog
