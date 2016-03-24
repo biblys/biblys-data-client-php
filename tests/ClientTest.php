@@ -127,7 +127,9 @@ class testClient extends PHPUnit_Framework_TestCase
 
         $result = self::$client->createPublisher($publisher);
 
-        $this->assertTrue($result);
+        $this->assertInstanceOf('\Biblys\Data\Publisher', $result);
+        $this->assertEquals($publisher->getName(), 'Dystopia');
+        $this->assertNotEmpty($publisher->getId());
     }
 
     /**
