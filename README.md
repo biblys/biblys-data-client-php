@@ -170,7 +170,7 @@ Run tests with PHPUnit:
 
 ## Changelog
 
-0.2.1 (2016-03-24)
+0.2.1 (2016-03-25)
 * Fixed getting Publisher with Book
 * Require Publisher property when creating a Book 
 
