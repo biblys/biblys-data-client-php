@@ -2,7 +2,8 @@
 
 namespace Biblys\Data;
 
-use Biblys\Isbn\Isbn as Isbn;
+use Biblys\Isbn\Isbn;
+use Biblys\Data\Publisher;
 
 class Book
 {
@@ -34,5 +35,16 @@ class Book
     public function getTitle()
     {
         return $this->title;
+    }
+
+    public function setPublisher(Publisher $publisher)
+    {
+        $this->publisher = $publisher;
+        return $this;
+    }
+
+    public function getPublisher()
+    {
+        return $this->publisher;
     }
 }

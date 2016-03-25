@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use Biblys\Data\Book;
+use Biblys\Data\Publisher;
 
 class testBook extends PHPUnit_Framework_TestCase
 {
@@ -44,5 +45,21 @@ class testBook extends PHPUnit_Framework_TestCase
         $book->setTitle($title);
 
         $this->assertEquals($title, $book->getTitle(), "setTitle should set a title");
+    }
+
+    /**
+     * Test setting a Publisher
+     */
+    public function testSetPublisher()
+    {
+        $book = new Book();
+
+        $publisher = new Publisher();
+        $publisher->setName('Dystopia');
+
+        $book->setPublisher($publisher);
+
+        $this->assertInstanceOf('\Biblys\Data\Publisher', $book->getPublisher());
+        $this->assertEquals('Dystopia', $book->getPublisher()->getName());
     }
 }
