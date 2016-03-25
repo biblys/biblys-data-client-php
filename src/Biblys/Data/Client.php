@@ -40,6 +40,9 @@ class Client
     {
         // Push related publisher
         $publisher = $book->getPublisher();
+        if (!$publisher) {
+            throw new \Exception("Book's publisher must a Publisher object");
+        }
         $publisher = $this->pushPublisher($publisher);
         $book->setPublisher($publisher);
 
