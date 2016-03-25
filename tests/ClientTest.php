@@ -25,13 +25,13 @@ class testClient extends PHPUnit_Framework_TestCase
     {
         $mock = new MockHandler([
             new Response(200, [], '{"ean":"9791091146135","title":"Chants du cauchemar et de la nuit","publisher":{"id":"1234","name":"Dystopia"}}'),
-            new Response(404, [], 'Cannot find a book with EAN 9791091146134'),
+            new Response(404, [], '{"error":"Cannot find a book with EAN 9791091146134"}'),
             new Response(201, [], '{"ean":"9791091146135","title":"Chants du cauchemar et de la nuit","publisher":{"id":"1234","name":"Dystopia"}}'),
-            new Response(409),
+            new Response(409, [], '{"ean":"9791091146135","title":"Chants du cauchemar et de la nuit","publisher":{"id":"1234","name":"Dystopia"}}'),
             new Response(200, [], '{"id":"1234","name":"Dystopia"}'),
-            new Response(404, [], 'Cannot find a publisher with id 1234'),
+            new Response(404, [], '{"error": "Cannot find a publisher with id 1234"}'),
             new Response(201, [], '{"id":"1234","name":"Dystopia"}'),
-            new Response(409, [], '{"id":"1234"}')
+            new Response(409, [], '{"id":"1234","name":"Dystopia"}')
         ]);
 
         $handler = HandlerStack::create($mock);
@@ -178,14 +178,12 @@ class testClient extends PHPUnit_Framework_TestCase
         $result = self::$client->createPublisher($publisher);
 
         $this->assertInstanceOf('\Biblys\Data\Publisher', $result);
-        $this->assertEquals($publisher->getName(), 'Dystopia');
-        $this->assertNotEmpty($publisher->getId());
+        $this->assertEquals('1234', $result->getId());
+        $this->assertEquals('Dystopia', $result->getName());
     }
 
     /**
-     * Test creating a book that already exists
-     * @expectedException Exception
-     * @expectedExceptionMessage Server answered 409
+     * Test creating a book
      */
     public function testCreatePublisherThatExists()
     {
@@ -193,5 +191,9 @@ class testClient extends PHPUnit_Framework_TestCase
         $publisher->setName('Dystopia');
 
         $result = self::$client->createPublisher($publisher);
+
+        $this->assertInstanceOf('\Biblys\Data\Publisher', $result);
+        $this->assertEquals('1234', $result->getId());
+        $this->assertEquals('Dystopia', $result->getName());
     }
 }

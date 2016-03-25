@@ -107,19 +107,7 @@ class Client
 
         // Return the book if it exists
         if ($status === 200) {
-            $body = (string) $response->getBody();
-            $bookData = json_decode($body);
-
-            $book = new Book();
-            $book->setEan($bookData->ean);
-            $book->setTitle($bookData->title);
-
-            $publisher = new Publisher();
-            $publisher->setId($bookData->publisher->id);
-            $publisher->setName($bookData->publisher->name);
-            $book->setPublisher($publisher);
-
-            return $book;
+            return Book::createFromResponse($response);
         }
 
         // Else, throw an exception
@@ -149,17 +137,13 @@ class Client
         ]);
         $status = $response->getStatusCode();
 
-        if ($status !== 201) {
-            throw new \Exception("Server answered $status");
+        // If Book was created or already exist
+        if ($status === 201 || $status === 409) {
+            $publisher = Publisher::createFromResponse($response);
+            return $publisher;
         }
 
-        // Update publisher with response
-        $body = (string) $response->getBody();
-        $publisherData = json_decode($body);
-        $publisher->setId($publisherData->id);
-        $publisher->setName($publisherData->name);
-
-        return $publisher;
+        throw new \Exception("Server answered $status");
     }
 
     public function getPublisher($id)
@@ -175,13 +159,7 @@ class Client
 
         // Return the publisher if it exists
         if ($status === 200) {
-            $body = (string) $response->getBody();
-            $publisherData = json_decode($body);
-
-            $publisher = new Publisher();
-            $publisher->setId($publisherData->id);
-            $publisher->setName($publisherData->name);
-            return $publisher;
+            return Publisher::createFromResponse($response);
         }
 
         // Else, throw an exception
