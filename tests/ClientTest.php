@@ -24,9 +24,9 @@ class testClient extends PHPUnit_Framework_TestCase
     public static function setUpBeforeClass()
     {
         $mock = new MockHandler([
-            new Response(200, [], '{"title":"Chants du cauchemar et de la nuit","ean":"9791091146135"}'),
+            new Response(200, [], '{"ean":"9791091146135","title":"Chants du cauchemar et de la nuit","publisher":{"id":"1234","name":"Dystopia"}}'),
             new Response(404, [], 'Cannot find a book with EAN 9791091146134'),
-            new Response(201, [], '{"title":"Chants du cauchemar et de la nuit","ean":"9791091146135"}'),
+            new Response(201, [], '{"ean":"9791091146135","title":"Chants du cauchemar et de la nuit","publisher":{"id":"1234","name":"Dystopia"}}'),
             new Response(409),
             new Response(200, [], '{"id":"1234","name":"Dystopia"}'),
             new Response(404, [], 'Cannot find a publisher with id 1234'),
@@ -51,10 +51,14 @@ class testClient extends PHPUnit_Framework_TestCase
     public function testGetBook()
     {
         $book = self::$client->getBook('9791091146135');
+        $publisher = $book->getPublisher();
 
         $this->assertInstanceOf('Biblys\Data\Book', $book, 'getBook result must be an instance of book');
         $this->assertEquals('Chants du cauchemar et de la nuit', $book->getTitle());
         $this->assertEquals('9791091146135', $book->getEan());
+        $this->assertInstanceOf('Biblys\Data\Publisher', $publisher);
+        $this->assertEquals('1234', $publisher->getId());
+        $this->assertEquals('Dystopia', $publisher->getName());
     }
 
     /**
@@ -76,6 +80,11 @@ class testClient extends PHPUnit_Framework_TestCase
         $book->setEan('9791091146134');
         $book->setTitle('Chants du cauchemar et de la nuit');
 
+        $publisher = new Publisher();
+        $publisher->setId('1234');
+        $publisher->setName('Dystopia');
+        $book->setPublisher($publisher);
+
         $result = self::$client->createBook($book);
 
         $this->assertTrue($result);
@@ -92,7 +101,48 @@ class testClient extends PHPUnit_Framework_TestCase
         $book->setEan('9791091146134');
         $book->setTitle('Chants du cauchemar et de la nuit');
 
+        $publisher = new Publisher();
+        $publisher->setId('1234');
+        $publisher->setName('Dystopia');
+        $book->setPublisher($publisher);
+
         $result = self::$client->createBook($book);
+    }
+
+    /**
+     * Test creating a book without a publisher
+     * @expectedException Exception
+     * @expectedExceptionMessage Cannot create a Book without a Publisher
+     */
+    public function testCreateBookWithoutPublisher()
+    {
+        $book = new Book();
+        $book->setEan('9791091146134');
+        $book->setTitle('Chants du cauchemar et de la nuit');
+
+        $result = self::$client->createBook($book);
+
+        $this->assertTrue($result);
+    }
+
+    /**
+     * Test creating a book without a publisher
+     * @expectedException Exception
+     * @expectedExceptionMessage Book's Publisher has no id
+     */
+    public function testCreateBookWithPublisherButNoId()
+    {
+        $book = new Book();
+        $book->setEan('9791091146134');
+        $book->setTitle('Chants du cauchemar et de la nuit');
+
+        $publisher = new Publisher();
+        $publisher->setName('Dystopia');
+        $book->setPublisher($publisher);
+
+        $result = self::$client->createBook($book);
+
+        $this->assertTrue($result);
     }
 
     /**
