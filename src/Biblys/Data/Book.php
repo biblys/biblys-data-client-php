@@ -9,6 +9,23 @@ class Book
 {
     private $ean, $title, $publisher;
 
+    public static function createFromResponse($response)
+    {
+        $body = (string) $response->getBody();
+        $data = json_decode($body);
+
+        $book = new Book();
+        $book->setEan($data->ean);
+        $book->setTitle($data->title);
+
+        $publisher = new Publisher();
+        $publisher->setId($data->publisher->id);
+        $publisher->setName($data->publisher->name);
+        $book->setPublisher($publisher);
+
+        return $book;
+    }
+
     public function setEan($ean)
     {
         $isbn = new Isbn($ean);

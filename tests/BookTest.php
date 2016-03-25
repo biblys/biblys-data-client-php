@@ -5,6 +5,8 @@ require_once __DIR__ . '/../vendor/autoload.php';
 use Biblys\Data\Book;
 use Biblys\Data\Publisher;
 
+use GuzzleHttp\Psr7\Response;
+
 class testBook extends PHPUnit_Framework_TestCase
 {
     private $book;
@@ -61,5 +63,21 @@ class testBook extends PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('\Biblys\Data\Publisher', $book->getPublisher());
         $this->assertEquals('Dystopia', $book->getPublisher()->getName());
+    }
+
+    /**
+     * Test creating a Book from response
+     */
+    public function testCreateFromResponse()
+    {
+        $response = new Response(201, [], '{"ean":"9791091146135","title":"Chants du cauchemar et de la nuit","publisher":{"id":"1234","name":"Dystopia"}}');
+
+        $book = Book::createFromResponse($response);
+        $publisher = $book->getPublisher();
+
+        $this->assertEquals('9791091146135', $book->getEan());
+        $this->assertEquals('Chants du cauchemar et de la nuit', $book->getTitle());
+        $this->assertEquals('1234', $publisher->getId());
+        $this->assertEquals('Dystopia', $publisher->getName());
     }
 }
