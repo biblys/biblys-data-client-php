@@ -6,7 +6,7 @@ use Biblys\Isbn\Isbn as Isbn;
 
 class Publisher
 {
-    private $ean, $title;
+    private $id, $name;
 
     public function setId($id)
     {

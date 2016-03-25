@@ -1,7 +1,7 @@
 {
     "name": "biblys/data-client-php",
     "description": "Biblys Data PHP client library",
-    "time": "2016-03-05",
+    "time": "2016-03-25",
     "keywords": ["ISBN", "Book", "Bibliography", "Biblys"],
     "license": "MIT",
     "homepage": "https://github.com/biblys/biblys-data-client-php",

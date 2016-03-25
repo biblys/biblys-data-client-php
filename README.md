@@ -11,7 +11,7 @@ With composer:
 
 Install with composer:
 
-`composer require biblys/isbn:~1.0`
+`composer require biblys/data-client-php:~0`
 
 
 ## API
@@ -169,6 +169,10 @@ Run tests with PHPUnit:
 
 
 ## Changelog
+
+0.2.1 (2016-03-25)
+* Fixed getting Publisher with Book
+* Require Publisher property when creating a Book 
 
 0.2.0 (2016-03-24)
 * Publisher push, create and get methods
