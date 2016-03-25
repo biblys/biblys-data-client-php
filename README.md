@@ -172,6 +172,7 @@ Run tests with PHPUnit:
 
 0.2.1 (2016-03-24)
 * Fixed getting Publisher with Book
+* Require Publisher property when creating a Book 
 
 0.2.0 (2016-03-24)
 * Publisher push, create and get methods

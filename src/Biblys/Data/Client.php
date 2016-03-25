@@ -58,10 +58,21 @@ class Client
 
     public function createBook(Book $book)
     {
+        $publisher = $book->getPublisher();
+        if (!$publisher) {
+            throw new \Exception("Cannot create a Book without a Publisher");
+        }
+
+        $publisher_id = $publisher->getId();
+        if (!$publisher_id) {
+            throw new \Exception("Book's Publisher has no id");
+        }
+
         $response = $this->http->request('POST', '/api/v0/books/', [
             'form_params' => [
                 'ean' => $book->getEan(),
-                'title' => $book->getTitle()
+                'title' => $book->getTitle(),
+                'publisher' => $publisher->getId()
             ]
         ]);
         $status = $response->getStatusCode();

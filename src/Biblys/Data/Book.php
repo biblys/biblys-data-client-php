@@ -7,7 +7,7 @@ use Biblys\Data\Publisher;
 
 class Book
 {
-    private $ean, $title;
+    private $ean, $title, $publisher;
 
     public function setEan($ean)
     {

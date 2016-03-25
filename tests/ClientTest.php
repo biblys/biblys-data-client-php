@@ -110,6 +110,42 @@ class testClient extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test creating a book without a publisher
+     * @expectedException Exception
+     * @expectedExceptionMessage Cannot create a Book without a Publisher
+     */
+    public function testCreateBookWithoutPublisher()
+    {
+        $book = new Book();
+        $book->setEan('9791091146134');
+        $book->setTitle('Chants du cauchemar et de la nuit');
+
+        $result = self::$client->createBook($book);
+
+        $this->assertTrue($result);
+    }
+
+    /**
+     * Test creating a book without a publisher
+     * @expectedException Exception
+     * @expectedExceptionMessage Book's Publisher has no id
+     */
+    public function testCreateBookWithPublisherButNoId()
+    {
+        $book = new Book();
+        $book->setEan('9791091146134');
+        $book->setTitle('Chants du cauchemar et de la nuit');
+
+        $publisher = new Publisher();
+        $publisher->setName('Dystopia');
+        $book->setPublisher($publisher);
+
+        $result = self::$client->createBook($book);
+
+        $this->assertTrue($result);
+    }
+
+    /**
      * Test getting a book
      */
     public function testGetPublisher()
