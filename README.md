@@ -11,7 +11,7 @@ With composer:
 
 Install with composer:
 
-`composer require biblys/isbn:~1.0`
+`composer require biblys/data-client-php:~0`
 
 
 ## API
