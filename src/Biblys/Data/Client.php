@@ -99,6 +99,12 @@ class Client
             $book = new Book();
             $book->setEan($bookData->ean);
             $book->setTitle($bookData->title);
+
+            $publisher = new Publisher();
+            $publisher->setId($bookData->publisher->id);
+            $publisher->setName($bookData->publisher->name);
+            $book->setPublisher($publisher);
+
             return $book;
         }
 
