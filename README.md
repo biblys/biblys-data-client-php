@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/biblys/biblys-data-client-php.svg?branch=master)](https://travis-ci.org/biblys/biblys-data-client-php)
 
-A PHP library to fetch data from or push data to [Biblys Data](http://data.biblys.fr/).
+A PHP library to fetch data from or push data to [Biblys Data](https://data.biblys.fr/).
 
 
 ## Install
