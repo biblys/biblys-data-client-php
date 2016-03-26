@@ -9,7 +9,7 @@ class Client
 {
     public function __construct($options = [])
     {
-        $this->server = "http://data.biblys.fr";
+        $this->server = "https://data.biblys.fr";
         if (isset($options["server"])) {
             $this->server = $options["server"];
         }
