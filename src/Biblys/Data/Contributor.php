@@ -12,9 +12,17 @@ class Contributor
         $contributorData = json_decode($body);
 
         $contributor = new Contributor();
+
         $contributor->setId($contributorData->id);
-        $contributor->setFirstName($contributorData->firstName);
-        $contributor->setLastName($contributorData->lastName);
+        if (isset($contributorData->firstName)) {
+            $contributor->setFirstName($contributorData->firstName);
+        }
+        if (isset($contributorData->lastName)) {
+            $contributor->setLastName($contributorData->lastName);
+        }
+        if (isset($contributorData->name)) {
+            $contributor->setName($contributorData->name);
+        }
 
         return $contributor;
     }

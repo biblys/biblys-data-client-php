@@ -31,6 +31,8 @@ class Client
         }
     }
 
+    /** BOOKS **/
+
     public function push(Book $book)
     {
         return $this->pushBook($book);
@@ -114,9 +116,11 @@ class Client
         throw new \Exception("Server answered $status");
     }
 
+    /** PUBLISHERS **/
+
     public function pushPublisher(Publisher $publisher)
     {
-        // Try to fetch the book from the server
+        // Try to fetch the publisher from the server
         $fetch = $this->getPublisher($publisher->getId());
 
         // If it doesn't exist, create it
@@ -148,8 +152,62 @@ class Client
 
     public function getPublisher($id)
     {
-        // Fetch publisher from server with this id
+        // Fetch contributor from server with this id
         $response = $this->http->request('GET', "/api/v0/books/$id");
+        $status = $response->getStatusCode();
+
+        // Return false if the contributor does not exist
+        if ($status === 404) {
+            return false;
+        }
+
+        // Return the contributor if it exists
+        if ($status === 200) {
+            return Publisher::createFromResponse($response);
+        }
+
+        // Else, throw an exception
+        throw new \Exception("Server answered $status");
+    }
+
+    /** CONTRIBUTORS **/
+
+    public function pushContributor(Contributor $contributor)
+    {
+        // Try to fetch the book from the server
+        $fetch = $this->getContributor($contributor->getId());
+
+        // If it doesn't exist, create it
+        if (!$fetch) {
+            return $this->createContributor($contributor);
+        }
+
+        // Else, update it (to be implemented server-side)
+        return $fetch;
+    }
+
+    public function createContributor(Contributor $contributor)
+    {
+        $response = $this->http->request('POST', '/api/v0/contributors/', [
+            'form_params' => [
+                'name' => $contributor->getName()
+            ]
+        ]);
+        $status = $response->getStatusCode();
+
+        // If Book was created or already exist
+        if ($status === 201 || $status === 409) {
+            $contributor = Contributor::createFromResponse($response);
+            return $contributor;
+        }
+
+        throw new \Exception("Server answered $status");
+    }
+
+    public function getContributor($id)
+    {
+        // Fetch publisher from server with this id
+        $response = $this->http->request('GET', "/api/v0/contributors/$id");
         $status = $response->getStatusCode();
 
         // Return false if the publisher does not exist
@@ -159,7 +217,7 @@ class Client
 
         // Return the publisher if it exists
         if ($status === 200) {
-            return Publisher::createFromResponse($response);
+            return Contributor::createFromResponse($response);
         }
 
         // Else, throw an exception
