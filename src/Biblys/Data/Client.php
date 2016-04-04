@@ -102,6 +102,10 @@ class Client
 
     public function getBook($ean)
     {
+        if (empty($ean)) {
+            return false;
+        }
+
         // Check that EAN is valid
         $isbn = new Isbn($ean);
         if (!$isbn->isValid()) {
@@ -131,6 +135,7 @@ class Client
 
     public function pushPublisher(Publisher $publisher)
     {
+
         // Try to fetch the publisher from the server
         $fetch = $this->getPublisher($publisher->getId());
 
@@ -163,6 +168,10 @@ class Client
 
     public function getPublisher($id)
     {
+        if (empty($id)) {
+            return false;
+        }
+
         // Fetch contributor from server with this id
         $response = $this->http->request('GET', "/api/v0/books/$id");
         $status = $response->getStatusCode();
@@ -217,6 +226,10 @@ class Client
 
     public function getContributor($id)
     {
+        if (empty($id)) {
+            return false;
+        }
+
         // Fetch publisher from server with this id
         $response = $this->http->request('GET', "/api/v0/contributors/$id");
         $status = $response->getStatusCode();
