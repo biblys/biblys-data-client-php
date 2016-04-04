@@ -170,6 +170,10 @@ Run tests with PHPUnit:
 
 ## Changelog
 
+DEV
+* Contributor push, create and get methods
+* Books must be pushed with at least one Contributor as an author
+
 0.2.1 (2016-03-25)
 * Fixed getting Publisher with Book
 * Require Publisher property when creating a Book 

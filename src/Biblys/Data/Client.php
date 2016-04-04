@@ -40,13 +40,24 @@ class Client
 
     public function pushBook(Book $book)
     {
-        // Push related publisher
+        // Push book's publisher
         $publisher = $book->getPublisher();
         if (!$publisher) {
             throw new \Exception("Book's publisher must a Publisher object");
         }
         $publisher = $this->pushPublisher($publisher);
         $book->setPublisher($publisher);
+
+        // Push book's authors
+        $authors = $book->getAuthors();
+        $book->setAuthors([]);
+        if (count($authors) == 0) {
+            throw new \Exception("Pushed books must have at least one author");
+        }
+        foreach ($authors as $author) {
+            $author = $this->pushAuthor($author);
+            $book->addAuthor($author);
+        }
 
         // Try to fetch the book from the server
         $fetch = $this->getBook($book->getEan());
