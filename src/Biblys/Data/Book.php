@@ -81,6 +81,11 @@ class Book
         $this->authors[] = $author;
     }
 
+    public function setAuthors(array $authors)
+    {
+        $this->authors = $authors;
+    }
+
     public function getAuthors()
     {
         return $this->authors;

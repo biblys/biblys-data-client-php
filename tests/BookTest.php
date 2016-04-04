@@ -84,6 +84,23 @@ class testBook extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test setting authors
+     */
+    public function testSetAuthors()
+    {
+        $book = new Book();
+
+        $author = new Contributor();
+        $author->setFirstName('Thomas');
+        $author->setLastName('Ligotti');
+
+        $book->setAuthors([$author]);
+
+        $this->assertInstanceOf('\Biblys\Data\Contributor', $book->getAuthors()[0]);
+        $this->assertEquals('Ligotti', $book->getAuthors()[0]->getLastName());
+    }
+
+    /**
      * Test creating a Book from response
      */
     public function testCreateFromResponse()
