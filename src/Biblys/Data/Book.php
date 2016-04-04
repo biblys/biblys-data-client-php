@@ -25,6 +25,15 @@ class Book
         $publisher->setName($data->publisher->name);
         $book->setPublisher($publisher);
 
+        if (isset($data->authors)) {
+            foreach($data->authors as $dataAuthor) {
+                $author = new Contributor();
+                $author->setId($dataAuthor->id);
+                $author->setName($dataAuthor->name);
+                $book->addAuthor($author);
+            }
+        }
+
         return $book;
     }
 

@@ -88,14 +88,27 @@ class testBook extends PHPUnit_Framework_TestCase
      */
     public function testCreateFromResponse()
     {
-        $response = new Response(201, [], '{"ean":"9791091146135","title":"Chants du cauchemar et de la nuit","publisher":{"id":"1234","name":"Dystopia"}}');
+        $response = new Response(201, [], '{
+            "ean": "9791091146135",
+            "title": "Chants du cauchemar et de la nuit",
+            "publisher": {
+                "id": "1234",
+                "name": "Dystopia"
+            },
+            "authors":[{
+                "id": "12345",
+                "name": "Thomas Ligotti"
+            }]
+        }');
 
         $book = Book::createFromResponse($response);
         $publisher = $book->getPublisher();
+        $author = $book->getAuthors()[0];
 
         $this->assertEquals('9791091146135', $book->getEan());
         $this->assertEquals('Chants du cauchemar et de la nuit', $book->getTitle());
         $this->assertEquals('1234', $publisher->getId());
         $this->assertEquals('Dystopia', $publisher->getName());
+        $this->assertEquals('Thomas Ligotti', $author->getName());
     }
 }
