@@ -55,7 +55,7 @@ class Client
             throw new \Exception("Pushed books must have at least one author");
         }
         foreach ($authors as $author) {
-            $author = $this->pushAuthor($author);
+            $author = $this->pushContributor($author);
             $book->addAuthor($author);
         }
 
