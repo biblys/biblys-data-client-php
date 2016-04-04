@@ -4,7 +4,7 @@ namespace Biblys\Data;
 
 class Contributor
 {
-    private $id, $firstName, $lastName;
+    private $id, $firstName, $lastName, $name;
 
     public static function createFromResponse($response)
     {
@@ -50,5 +50,23 @@ class Contributor
     public function getLastName()
     {
         return $this->lastName;
+    }
+
+    /**
+     * Full name: firstName + lastName
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+        return $this;
+    }
+
+    public function getName()
+    {
+        if (!isset($this->name)) {
+            $this->name = trim($this->getFirstName().' '.$this->getLastName());
+        }
+
+        return $this->name;
     }
 }

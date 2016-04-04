@@ -20,7 +20,8 @@ class testContributor extends PHPUnit_Framework_TestCase
 
         $contributor->setId($id);
 
-        $this->assertEquals($id, $contributor->getId(), "setId should set an id");
+        $this->assertEquals($id, $contributor->getId(),
+            "setId should set an id");
     }
 
     /**
@@ -32,7 +33,8 @@ class testContributor extends PHPUnit_Framework_TestCase
 
         $contributor->setFirstName('Thomas');
 
-        $this->assertEquals('Thomas', $contributor->getFirstName(), "setFirstName should set a first name");
+        $this->assertEquals('Thomas', $contributor->getFirstName(),
+            "setFirstName should set a first name");
     }
 
     /**
@@ -44,7 +46,35 @@ class testContributor extends PHPUnit_Framework_TestCase
 
         $contributor->setLastName('Ligotti');
 
-        $this->assertEquals('Ligotti', $contributor->getLastName(), "setLastName should set a last name");
+        $this->assertEquals('Ligotti', $contributor->getLastName(),
+            "setLastName should set a last name");
+    }
+
+    /**
+     * Test setting a full name
+     */
+    public function testSetName()
+    {
+        $contributor = new Contributor();
+
+        $contributor->setName('Thomas Ligotti');
+
+        $this->assertEquals('Thomas Ligotti', $contributor->getName(),
+            "setName should set a name");
+    }
+
+    /**
+     * Test guessing a full name
+     */
+    public function testGuessName()
+    {
+        $contributor = new Contributor();
+
+        $contributor->setFirstName('Thomas');
+        $contributor->setLastName('Ligotti');
+
+        $this->assertEquals('Thomas Ligotti', $contributor->getName(),
+            "setName should guest full name from first and last");
     }
 
     /**
