@@ -84,11 +84,21 @@ class Client
             throw new \Exception("Book's Publisher has no id");
         }
 
+        $authors = $book->getAuthors();
+        if (count($authors) === 0) {
+            throw new \Exception("Cannot create a book with at least one author");
+        }
+        $authors_array = [];
+        foreach ($authors as $author) {
+            $authors_array[] = ['id' => $author->getId()];
+        }
+
         $response = $this->http->request('POST', '/api/v0/books/', [
             'form_params' => [
                 'ean' => $book->getEan(),
                 'title' => $book->getTitle(),
-                'publisher' => $publisher->getId()
+                'publisher' => $publisher->getId(),
+                'authors' => json_encode($authors_array)
             ]
         ]);
         $status = $response->getStatusCode();
