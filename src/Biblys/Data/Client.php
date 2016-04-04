@@ -210,7 +210,8 @@ class Client
     {
         $response = $this->http->request('POST', '/api/v0/contributors/', [
             'form_params' => [
-                'name' => $contributor->getName()
+                'firstName' => $contributor->getFirstName(),
+                'lastName' => $contributor->getLastName()
             ]
         ]);
         $status = $response->getStatusCode();
