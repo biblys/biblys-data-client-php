@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use Biblys\Data\Book;
+use Biblys\Data\Contributor;
 use Biblys\Data\Publisher;
 
 use GuzzleHttp\Psr7\Response;
@@ -63,6 +64,23 @@ class testBook extends PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('\Biblys\Data\Publisher', $book->getPublisher());
         $this->assertEquals('Dystopia', $book->getPublisher()->getName());
+    }
+
+    /**
+     * Test adding an author
+     */
+    public function testAddAuthor()
+    {
+        $book = new Book();
+
+        $author = new Contributor();
+        $author->setFirstName('Thomas');
+        $author->setLastName('Ligotti');
+
+        $book->addAuthor($author);
+
+        $this->assertInstanceOf('\Biblys\Data\Contributor', $book->getAuthors()[0]);
+        $this->assertEquals('Ligotti', $book->getAuthors()[0]->getLastName());
     }
 
     /**

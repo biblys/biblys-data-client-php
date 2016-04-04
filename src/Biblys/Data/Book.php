@@ -3,11 +3,13 @@
 namespace Biblys\Data;
 
 use Biblys\Isbn\Isbn;
+use Biblys\Data\Contributor;
 use Biblys\Data\Publisher;
 
 class Book
 {
-    private $ean, $title, $publisher;
+    private $ean, $title, $publisher,
+        $authors = [];
 
     public static function createFromResponse($response)
     {
@@ -63,5 +65,15 @@ class Book
     public function getPublisher()
     {
         return $this->publisher;
+    }
+
+    public function addAuthor(Contributor $author)
+    {
+        $this->authors[] = $author;
+    }
+
+    public function getAuthors()
+    {
+        return $this->authors;
     }
 }
