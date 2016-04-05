@@ -93,6 +93,12 @@ class testClient extends PHPUnit_Framework_TestCase
         $publisher->setName('Dystopia');
         $book->setPublisher($publisher);
 
+        $author = new Contributor();
+        $author->setId('12345');
+        $author->setFirstName('Thomas');
+        $author->setLastName('Ligotti');
+        $book->addAuthor($author);
+
         $result = self::$client->createBook($book);
 
         $this->assertTrue($result);
@@ -114,6 +120,12 @@ class testClient extends PHPUnit_Framework_TestCase
         $publisher->setName('Dystopia');
         $book->setPublisher($publisher);
 
+        $author = new Contributor();
+        $author->setId('12345');
+        $author->setFirstName('Thomas');
+        $author->setLastName('Ligotti');
+        $book->addAuthor($author);
+
         $result = self::$client->createBook($book);
     }
 
@@ -134,7 +146,7 @@ class testClient extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test creating a book without a publisher
+     * Test creating a book with a publisher that has no id
      * @expectedException Exception
      * @expectedExceptionMessage Book's Publisher has no id
      */
@@ -147,6 +159,53 @@ class testClient extends PHPUnit_Framework_TestCase
         $publisher = new Publisher();
         $publisher->setName('Dystopia');
         $book->setPublisher($publisher);
+
+        $result = self::$client->createBook($book);
+
+        $this->assertTrue($result);
+    }
+
+    /**
+     * Test creating a book without author
+     * @expectedException Exception
+     * @expectedExceptionMessage Cannot create a Book without at least one Author
+     */
+    public function testCreateBookWithoutAuthor()
+    {
+        $book = new Book();
+        $book->setEan('9791091146134');
+        $book->setTitle('Chants du cauchemar et de la nuit');
+
+        $publisher = new Publisher();
+        $publisher->setId('1234');
+        $publisher->setName('Dystopia');
+        $book->setPublisher($publisher);
+
+        $result = self::$client->createBook($book);
+
+        $this->assertTrue($result);
+    }
+
+    /**
+     * Test creating a book without author
+     * @expectedException Exception
+     * @expectedExceptionMessage Book's Author has no id
+     */
+    public function testCreateBookWithAuthorButNoId()
+    {
+        $book = new Book();
+        $book->setEan('9791091146134');
+        $book->setTitle('Chants du cauchemar et de la nuit');
+
+        $publisher = new Publisher();
+        $publisher->setId('1234');
+        $publisher->setName('Dystopia');
+        $book->setPublisher($publisher);
+
+        $author = new Contributor();
+        $author->setFirstName('Thomas');
+        $author->setLastName('Ligotti');
+        $book->addAuthor($author);
 
         $result = self::$client->createBook($book);
 
