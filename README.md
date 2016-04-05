@@ -88,8 +88,72 @@ Set the book's title
 
 Get the book's title
 
+#### $book->setPublisher(Publisher $publisher)
+
+Associate a Publisher resource with the book
+
+#### $book->getPublisher()
+
+Get the book's publisher as a Publisher object
+
+#### $book->setAuthors(array $authors)
+
+Set the book's authors (must be an array of Contributor objects)
+
+#### $book->addAuthor(Author $author)
+
+Associate a Contributor with the book as an author
+
+#### $book->getAuthors()
+
+Get the book's authors as an array of Contributor objects
+
+
+### Contributor
+
+Multiple contributors can be associated with book as authors.
+Other roles (illustrator, translator, etc.) will come later.
+
+#### $contributor = new Contributor()
+
+Create a new `Contributor` object
+
+#### $contributor->setId(string $id)
+
+Set the contributor's id.
+
+#### $contributor->getId()
+
+Get the contributor's id.
+
+#### $contributor->setFirstName(string $firstName)
+
+Set the contributor's first name
+
+#### $contributor->getFirstName()
+
+Get the contributor's first name
+
+#### $contributor->setLastName(string $lastName)
+
+Set the contributor's last name
+
+#### $contributor->getLastName()
+
+Get the contributor's last name
+
+#### $contributor->setName(string $name)
+
+Set the contributor's full name (first + last names)
+
+#### $contributor->getName()
+
+Get the contributor's full name (first + last names)
+
 
 ### Publisher
+
+A publisher resource can be associated with a book.
 
 #### $publisher = new Publisher()
 
@@ -107,7 +171,7 @@ Get the publisher's id.
 
 Set the publisher's name
 
-#### $book->getName()
+#### $publisher->getName()
 
 Get the publisher's name
 
@@ -150,6 +214,11 @@ $book->setTitle('Chants du cauchemar et de la nuit');
 $publisher = new Publisher();
 $publisher->setName('Dystopia');
 $book->setPublisher($publisher);
+
+$author = new Contributor();
+$author->setFirstName('Thomas');
+$author->setLastName('Ligotti');
+$book->addAuthor($author);
 
 try {
   $result = $client->push($book);  
