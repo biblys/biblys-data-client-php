@@ -4,12 +4,14 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use Biblys\Data\Publisher;
 
+use GuzzleHttp\Psr7\Response;
+
 class testPublisher extends PHPUnit_Framework_TestCase
 {
     private $publisher;
 
     /**
-     * Test setting an EAN
+     * Test setting an id
      */
     public function testSetId()
     {
@@ -22,7 +24,7 @@ class testPublisher extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test setting a title
+     * Test setting a name
      */
     public function testSetName()
     {
@@ -32,5 +34,18 @@ class testPublisher extends PHPUnit_Framework_TestCase
         $publisher->setName($name);
 
         $this->assertEquals($name, $publisher->getName(), "setName should set a name");
+    }
+
+    /**
+     * Test creating a Publisher from response
+     */
+    public function testCreateFromResponse()
+    {
+        $response = new Response(201, [], '{"id":"1234","name":"Dystopia"}');
+
+        $publisher = Publisher::createFromResponse($response);
+
+        $this->assertEquals('1234', $publisher->getId());
+        $this->assertEquals('Dystopia', $publisher->getName());
     }
 }

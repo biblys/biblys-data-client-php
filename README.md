@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/biblys/biblys-data-client-php.svg?branch=master)](https://travis-ci.org/biblys/biblys-data-client-php)
 
-A PHP library to fetch data from or push data to [Biblys Data](http://data.biblys.fr/).
+A PHP library to fetch data from or push data to [Biblys Data](https://data.biblys.fr/).
 
 
 ## Install
@@ -169,6 +169,10 @@ Run tests with PHPUnit:
 
 
 ## Changelog
+
+0.3.0 (2016-04-05)
+* Contributor push, create and get methods
+* Books must be pushed with at least one Contributor as an author
 
 0.2.1 (2016-03-25)
 * Fixed getting Publisher with Book

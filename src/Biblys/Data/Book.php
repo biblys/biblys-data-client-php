@@ -3,11 +3,39 @@
 namespace Biblys\Data;
 
 use Biblys\Isbn\Isbn;
+use Biblys\Data\Contributor;
 use Biblys\Data\Publisher;
 
 class Book
 {
-    private $ean, $title, $publisher;
+    private $ean, $title, $publisher,
+        $authors = [];
+
+    public static function createFromResponse($response)
+    {
+        $body = (string) $response->getBody();
+        $data = json_decode($body);
+
+        $book = new Book();
+        $book->setEan($data->ean);
+        $book->setTitle($data->title);
+
+        $publisher = new Publisher();
+        $publisher->setId($data->publisher->id);
+        $publisher->setName($data->publisher->name);
+        $book->setPublisher($publisher);
+
+        if (isset($data->authors)) {
+            foreach($data->authors as $dataAuthor) {
+                $author = new Contributor();
+                $author->setId($dataAuthor->id);
+                $author->setName($dataAuthor->name);
+                $book->addAuthor($author);
+            }
+        }
+
+        return $book;
+    }
 
     public function setEan($ean)
     {
@@ -46,5 +74,20 @@ class Book
     public function getPublisher()
     {
         return $this->publisher;
+    }
+
+    public function addAuthor(Contributor $author)
+    {
+        $this->authors[] = $author;
+    }
+
+    public function setAuthors(array $authors)
+    {
+        $this->authors = $authors;
+    }
+
+    public function getAuthors()
+    {
+        return $this->authors;
     }
 }

@@ -9,7 +9,7 @@ class Client
 {
     public function __construct($options = [])
     {
-        $this->server = "http://data.biblys.fr";
+        $this->server = "https://data.biblys.fr";
         if (isset($options["server"])) {
             $this->server = $options["server"];
         }
@@ -31,6 +31,8 @@ class Client
         }
     }
 
+    /** BOOKS **/
+
     public function push(Book $book)
     {
         return $this->pushBook($book);
@@ -38,10 +40,24 @@ class Client
 
     public function pushBook(Book $book)
     {
-        // Push related publisher
+        // Push book's publisher
         $publisher = $book->getPublisher();
+        if (!$publisher) {
+            throw new \Exception("Book's publisher must a Publisher object");
+        }
         $publisher = $this->pushPublisher($publisher);
         $book->setPublisher($publisher);
+
+        // Push book's authors
+        $authors = $book->getAuthors();
+        $book->setAuthors([]);
+        if (count($authors) == 0) {
+            throw new \Exception("Pushed books must have at least one author");
+        }
+        foreach ($authors as $author) {
+            $author = $this->pushContributor($author);
+            $book->addAuthor($author);
+        }
 
         // Try to fetch the book from the server
         $fetch = $this->getBook($book->getEan());
@@ -68,11 +84,25 @@ class Client
             throw new \Exception("Book's Publisher has no id");
         }
 
+        $authors = $book->getAuthors();
+        if (count($authors) === 0) {
+            throw new \Exception("Cannot create a Book without at least one Author");
+        }
+        $authors_array = [];
+        foreach ($authors as $author) {
+            $author_id = $author->getId();
+            if (!$author_id) {
+                throw new \Exception("Book's Author has no id");
+            }
+            $authors_array[] = ['id' => $author_id];
+        }
+
         $response = $this->http->request('POST', '/api/v0/books/', [
             'form_params' => [
                 'ean' => $book->getEan(),
                 'title' => $book->getTitle(),
-                'publisher' => $publisher->getId()
+                'publisher' => $publisher->getId(),
+                'authors' => json_encode($authors_array)
             ]
         ]);
         $status = $response->getStatusCode();
@@ -86,6 +116,10 @@ class Client
 
     public function getBook($ean)
     {
+        if (empty($ean)) {
+            return false;
+        }
+
         // Check that EAN is valid
         $isbn = new Isbn($ean);
         if (!$isbn->isValid()) {
@@ -104,28 +138,19 @@ class Client
 
         // Return the book if it exists
         if ($status === 200) {
-            $body = (string) $response->getBody();
-            $bookData = json_decode($body);
-
-            $book = new Book();
-            $book->setEan($bookData->ean);
-            $book->setTitle($bookData->title);
-
-            $publisher = new Publisher();
-            $publisher->setId($bookData->publisher->id);
-            $publisher->setName($bookData->publisher->name);
-            $book->setPublisher($publisher);
-
-            return $book;
+            return Book::createFromResponse($response);
         }
 
         // Else, throw an exception
         throw new \Exception("Server answered $status");
     }
 
+    /** PUBLISHERS **/
+
     public function pushPublisher(Publisher $publisher)
     {
-        // Try to fetch the book from the server
+
+        // Try to fetch the publisher from the server
         $fetch = $this->getPublisher($publisher->getId());
 
         // If it doesn't exist, create it
@@ -146,23 +171,82 @@ class Client
         ]);
         $status = $response->getStatusCode();
 
-        if ($status !== 201) {
-            throw new \Exception("Server answered $status");
+        // If Book was created or already exist
+        if ($status === 201 || $status === 409) {
+            $publisher = Publisher::createFromResponse($response);
+            return $publisher;
         }
 
-        // Update publisher with response
-        $body = (string) $response->getBody();
-        $publisherData = json_decode($body);
-        $publisher->setId($publisherData->id);
-        $publisher->setName($publisherData->name);
-
-        return $publisher;
+        throw new \Exception("Server answered $status");
     }
 
     public function getPublisher($id)
     {
-        // Fetch publisher from server with this id
+        if (empty($id)) {
+            return false;
+        }
+
+        // Fetch contributor from server with this id
         $response = $this->http->request('GET', "/api/v0/books/$id");
+        $status = $response->getStatusCode();
+
+        // Return false if the contributor does not exist
+        if ($status === 404) {
+            return false;
+        }
+
+        // Return the contributor if it exists
+        if ($status === 200) {
+            return Publisher::createFromResponse($response);
+        }
+
+        // Else, throw an exception
+        throw new \Exception("Server answered $status");
+    }
+
+    /** CONTRIBUTORS **/
+
+    public function pushContributor(Contributor $contributor)
+    {
+        // Try to fetch the book from the server
+        $fetch = $this->getContributor($contributor->getId());
+
+        // If it doesn't exist, create it
+        if (!$fetch) {
+            return $this->createContributor($contributor);
+        }
+
+        // Else, update it (to be implemented server-side)
+        return $fetch;
+    }
+
+    public function createContributor(Contributor $contributor)
+    {
+        $response = $this->http->request('POST', '/api/v0/contributors/', [
+            'form_params' => [
+                'firstName' => $contributor->getFirstName(),
+                'lastName' => $contributor->getLastName()
+            ]
+        ]);
+        $status = $response->getStatusCode();
+
+        // If Book was created or already exist
+        if ($status === 201 || $status === 409) {
+            $contributor = Contributor::createFromResponse($response);
+            return $contributor;
+        }
+
+        throw new \Exception("Server answered $status");
+    }
+
+    public function getContributor($id)
+    {
+        if (empty($id)) {
+            return false;
+        }
+
+        // Fetch publisher from server with this id
+        $response = $this->http->request('GET', "/api/v0/contributors/$id");
         $status = $response->getStatusCode();
 
         // Return false if the publisher does not exist
@@ -172,13 +256,7 @@ class Client
 
         // Return the publisher if it exists
         if ($status === 200) {
-            $body = (string) $response->getBody();
-            $publisherData = json_decode($body);
-
-            $publisher = new Publisher();
-            $publisher->setId($publisherData->id);
-            $publisher->setName($publisherData->name);
-            return $publisher;
+            return Contributor::createFromResponse($response);
         }
 
         // Else, throw an exception
