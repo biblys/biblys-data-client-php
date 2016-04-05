@@ -170,7 +170,7 @@ Run tests with PHPUnit:
 
 ## Changelog
 
-DEV
+0.3.0 (2016-04-05)
 * Contributor push, create and get methods
 * Books must be pushed with at least one Contributor as an author
 
